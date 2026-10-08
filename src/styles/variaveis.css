@@ -1,0 +1,116 @@
+/* =============================================
+   VARIÁVEIS GLOBAIS — Corretor Imóveis
+   Paleta: Preto & Dourado
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+:root {
+  /* ── Cores Principais ── */
+  --preto:           #000000;
+  --preto-suave:     #0a0a0a;
+  --preto-card:      #111111;
+  --preto-borda:     #1e1e1e;
+  --cinza-escuro:    #1a1a1a;
+  --cinza-medio:     #2a2a2a;
+  --cinza-claro:     #3a3a3a;
+
+  /* ── Dourados ── */
+  --dourado-escuro:  #B07A1E;
+  --dourado-medio:   #D9A93F;
+  --dourado-vivo:    #FFD65A;
+  --dourado-claro:   #FFF59B;
+  --dourado-alpha10: rgba(217, 169, 63, 0.10);
+  --dourado-alpha20: rgba(217, 169, 63, 0.20);
+  --dourado-alpha30: rgba(217, 169, 63, 0.30);
+  --dourado-alpha50: rgba(217, 169, 63, 0.50);
+
+  /* ── Gradientes ── */
+  --gradiente-dourado:       linear-gradient(135deg, #B07A1E 0%, #FFD65A 50%, #B07A1E 100%);
+  --gradiente-dourado-sutil: linear-gradient(135deg, #D9A93F 0%, #FFF59B 100%);
+  --gradiente-escuro:        linear-gradient(180deg, #000000 0%, #0a0a0a 100%);
+  --gradiente-hero:          linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.75) 100%);
+  --gradiente-card:          linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.92) 100%);
+
+  /* ── Texto ── */
+  --texto-primario:   #ffffff;
+  --texto-secundario: #c8c8c8;
+  --texto-terciario:  #888888;
+  --texto-dourado:    #D9A93F;
+  --texto-dourado-brilho: #FFD65A;
+
+  /* ── Tipografia ── */
+  --fonte-principal: 'Outfit', sans-serif;
+  --fonte-serif:     'Playfair Display', serif;
+
+  --tamanho-xs:   0.75rem;   /* 12px */
+  --tamanho-sm:   0.875rem;  /* 14px */
+  --tamanho-base: 1rem;      /* 16px */
+  --tamanho-md:   1.125rem;  /* 18px */
+  --tamanho-lg:   1.25rem;   /* 20px */
+  --tamanho-xl:   1.5rem;    /* 24px */
+  --tamanho-2xl:  2rem;      /* 32px */
+  --tamanho-3xl:  2.5rem;    /* 40px */
+  --tamanho-4xl:  3rem;      /* 48px */
+  --tamanho-5xl:  3.75rem;   /* 60px */
+  --tamanho-6xl:  4.5rem;    /* 72px */
+
+  /* ── Espaçamentos ── */
+  --espaco-1:  0.25rem;
+  --espaco-2:  0.5rem;
+  --espaco-3:  0.75rem;
+  --espaco-4:  1rem;
+  --espaco-5:  1.25rem;
+  --espaco-6:  1.5rem;
+  --espaco-8:  2rem;
+  --espaco-10: 2.5rem;
+  --espaco-12: 3rem;
+  --espaco-16: 4rem;
+  --espaco-20: 5rem;
+  --espaco-24: 6rem;
+  --espaco-32: 8rem;
+
+  /* ── Bordas ── */
+  --raio-sm:     4px;
+  --raio-md:     8px;
+  --raio-lg:     12px;
+  --raio-xl:     16px;
+  --raio-2xl:    24px;
+  --raio-full:   9999px;
+
+  --borda-dourado:       1px solid var(--dourado-alpha30);
+  --borda-dourado-forte: 1px solid var(--dourado-medio);
+  --borda-escura:        1px solid var(--preto-borda);
+
+  /* ── Sombras ── */
+  --sombra-sm:     0 2px 8px rgba(0,0,0,0.4);
+  --sombra-md:     0 4px 20px rgba(0,0,0,0.5);
+  --sombra-lg:     0 8px 40px rgba(0,0,0,0.6);
+  --sombra-xl:     0 16px 60px rgba(0,0,0,0.7);
+  --sombra-dourado: 0 4px 24px rgba(217, 169, 63, 0.25);
+  --sombra-dourado-lg: 0 8px 40px rgba(217, 169, 63, 0.35);
+
+  /* ── Glassmorphism ── */
+  --glass-bg:     rgba(255, 255, 255, 0.03);
+  --glass-borda:  rgba(255, 255, 255, 0.06);
+  --glass-blur:   blur(16px);
+
+  /* ── Transições ── */
+  --transicao-rapida:  all 0.15s ease;
+  --transicao-normal:  all 0.3s ease;
+  --transicao-lenta:   all 0.5s ease;
+  --transicao-mola:    all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Z-Index ── */
+  --z-abaixo:    -1;
+  --z-base:       0;
+  --z-elevado:    10;
+  --z-modal:      100;
+  --z-topo:       200;
+  --z-overlay:    300;
+
+  /* ── Layout ── */
+  --container-max:  1280px;
+  --container-wide: 1440px;
+  --header-altura:  72px;
+}

@@ -1,0 +1,250 @@
+/* =============================================
+   GLOBAL CSS — Corretor Imóveis
+   ============================================= */
+
+@import './variaveis.css';
+
+/* ── Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--fonte-principal);
+  background-color: var(--preto);
+  color: var(--texto-primario);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* ── Container ── */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--espaco-6);
+}
+
+.container--wide {
+  max-width: var(--container-wide);
+}
+
+/* ── Seções ── */
+.secao {
+  padding-block: var(--espaco-20);
+}
+
+.secao--menor {
+  padding-block: var(--espaco-12);
+}
+
+.secao-titulo {
+  font-family: var(--fonte-serif);
+  font-size: var(--tamanho-3xl);
+  font-weight: 700;
+  color: var(--texto-primario);
+  margin-bottom: var(--espaco-3);
+  line-height: 1.2;
+}
+
+.secao-titulo span {
+  background: var(--gradiente-dourado);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.secao-subtitulo {
+  font-size: var(--tamanho-md);
+  color: var(--texto-secundario);
+  max-width: 600px;
+}
+
+.secao-header {
+  margin-bottom: var(--espaco-12);
+}
+
+.secao-header--centro {
+  text-align: center;
+}
+
+.secao-header--centro .secao-subtitulo {
+  margin-inline: auto;
+}
+
+/* ── Separador Dourado ── */
+.divisor-dourado {
+  width: 60px;
+  height: 3px;
+  background: var(--gradiente-dourado);
+  border-radius: var(--raio-full);
+  margin-bottom: var(--espaco-6);
+}
+
+.divisor-dourado--centro {
+  margin-inline: auto;
+}
+
+/* ── Badge / Tag ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-1);
+  padding: var(--espaco-1) var(--espaco-3);
+  border-radius: var(--raio-full);
+  font-size: var(--tamanho-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badge--dourado {
+  background: var(--dourado-alpha20);
+  color: var(--dourado-vivo);
+  border: 1px solid var(--dourado-alpha30);
+}
+
+.badge--disponivel {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.badge--vendido {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.badge--reservado {
+  background: rgba(234, 179, 8, 0.15);
+  color: #facc15;
+  border: 1px solid rgba(234, 179, 8, 0.25);
+}
+
+/* ── Grid de imóveis ── */
+.grid-imoveis {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--espaco-6);
+}
+
+/* ── Glass Card ── */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-borda);
+  border-radius: var(--raio-xl);
+}
+
+/* ── Scrollbar customizada ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--preto-suave);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dourado-escuro);
+  border-radius: var(--raio-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dourado-medio);
+}
+
+/* ── Seleção de texto ── */
+::selection {
+  background: var(--dourado-alpha50);
+  color: var(--preto);
+}
+
+/* ── Utilitários ── */
+.texto-dourado {
+  background: var(--gradiente-dourado);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.texto-center { text-align: center; }
+.flex-center   { display: flex; align-items: center; justify-content: center; }
+.sr-only       { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+/* ── Animações globais ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulsoDourado {
+  0%, 100% { box-shadow: 0 0 0 0 var(--dourado-alpha30); }
+  50%       { box-shadow: 0 0 0 8px transparent; }
+}
+
+@keyframes rotacionar {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes brilhoDourado {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+.animar-entrada {
+  animation: fadeIn 0.5s ease both;
+}
+
+/* ── Responsividade Base ── */
+@media (max-width: 768px) {
+  .secao-titulo { font-size: var(--tamanho-2xl); }
+  .secao { padding-block: var(--espaco-12); }
+  .container { padding-inline: var(--espaco-4); }
+  .grid-imoveis { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .secao-titulo { font-size: var(--tamanho-xl); }
+}

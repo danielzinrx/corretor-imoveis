@@ -1,0 +1,301 @@
+/* =============================================
+   HERO 3D — Efeito Perspectiva & Parallax
+   ============================================= */
+
+/* ── Container Principal ── */
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--preto);
+}
+
+/* ── Cena 3D ── */
+.hero__cena {
+  position: absolute;
+  inset: 0;
+  perspective: 1000px;
+  perspective-origin: 50% 40%;
+}
+
+/* ── Imagem com transformação 3D ── */
+.hero__imagem-wrap {
+  position: absolute;
+  inset: -5%;
+  transform-style: preserve-3d;
+  transform: rotateX(4deg) scale(1.08);
+  transition: transform 0.1s linear;
+  will-change: transform;
+}
+
+.hero__imagem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  transform-origin: center center;
+}
+
+/* ── Overlay Escuro ── */
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(180deg, 
+      rgba(0,0,0,0.30) 0%, 
+      rgba(0,0,0,0.55) 40%,
+      rgba(0,0,0,0.85) 80%,
+      rgba(0,0,0,0.97) 100%
+    );
+  z-index: 1;
+}
+
+/* ── Overlay Dourado Sutil ── */
+.hero__overlay-dourado {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 60%,
+    rgba(176, 122, 30, 0.08) 0%,
+    transparent 70%
+  );
+  z-index: 2;
+}
+
+/* ── Conteúdo ── */
+.hero__conteudo {
+  position: relative;
+  z-index: 10;
+  padding: calc(var(--header-altura) + var(--espaco-16)) var(--espaco-6) var(--espaco-20);
+  max-width: var(--container-max);
+  margin-inline: auto;
+  width: 100%;
+}
+
+/* ── Badge superior ── */
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-2);
+  padding: var(--espaco-2) var(--espaco-4);
+  background: var(--dourado-alpha10);
+  border: 1px solid var(--dourado-alpha30);
+  border-radius: var(--raio-full);
+  font-size: var(--tamanho-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dourado-vivo);
+  margin-bottom: var(--espaco-6);
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.6s ease 0.2s both;
+}
+
+.hero__badge-ponto {
+  width: 6px;
+  height: 6px;
+  background: var(--dourado-vivo);
+  border-radius: 50%;
+  animation: pulsoDourado 2s ease-in-out infinite;
+}
+
+/* ── Título Principal ── */
+.hero__titulo {
+  font-family: var(--fonte-serif);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--texto-primario);
+  margin-bottom: var(--espaco-6);
+  animation: fadeIn 0.7s ease 0.4s both;
+  max-width: 800px;
+}
+
+.hero__titulo-destaque {
+  display: block;
+  background: var(--gradiente-dourado);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: brilhoDourado 4s linear infinite;
+}
+
+/* ── Frase Motivacional ── */
+.hero__frase {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--texto-secundario);
+  max-width: 580px;
+  margin-bottom: var(--espaco-10);
+  line-height: 1.7;
+  animation: fadeIn 0.7s ease 0.6s both;
+}
+
+.hero__frase em {
+  color: var(--dourado-medio);
+  font-style: italic;
+}
+
+/* ── Botões ── */
+.hero__botoes {
+  display: flex;
+  gap: var(--espaco-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--espaco-16);
+  animation: fadeIn 0.7s ease 0.8s both;
+}
+
+/* ── Corretores ── */
+.hero__corretores {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-6);
+  flex-wrap: wrap;
+  animation: fadeIn 0.7s ease 1s both;
+}
+
+.hero__corretor {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+  padding: var(--espaco-3) var(--espaco-5);
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--dourado-alpha20);
+  border-radius: var(--raio-xl);
+  transition: var(--transicao-normal);
+}
+
+.hero__corretor:hover {
+  border-color: var(--dourado-alpha50);
+  background: rgba(0,0,0,0.7);
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-dourado);
+}
+
+.hero__corretor-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--dourado-medio);
+}
+
+.hero__corretor-avatar-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--gradiente-dourado);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--tamanho-lg);
+  font-weight: 700;
+  color: var(--preto);
+  border: 2px solid var(--dourado-medio);
+  flex-shrink: 0;
+}
+
+.hero__corretor-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hero__corretor-nome {
+  font-size: var(--tamanho-sm);
+  font-weight: 600;
+  color: var(--texto-primario);
+}
+
+.hero__corretor-creci {
+  font-size: var(--tamanho-xs);
+  color: var(--dourado-medio);
+  font-weight: 500;
+}
+
+/* ── Separador entre corretores ── */
+.hero__corretor-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--dourado-alpha30);
+}
+
+/* ── Scroll Indicator ── */
+.hero__scroll {
+  position: absolute;
+  bottom: var(--espaco-8);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-2);
+  animation: fadeIn 1s ease 1.5s both;
+}
+
+.hero__scroll-texto {
+  font-size: var(--tamanho-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--texto-terciario);
+}
+
+.hero__scroll-linha {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(180deg, var(--dourado-medio), transparent);
+  animation: pulsoDourado 2s ease-in-out infinite;
+}
+
+/* ── Partículas decorativas ── */
+.hero__particula {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.hero__particula--1 {
+  width: 300px;
+  height: 300px;
+  top: -100px;
+  right: 10%;
+  background: radial-gradient(circle, var(--dourado-alpha10) 0%, transparent 70%);
+}
+
+.hero__particula--2 {
+  width: 200px;
+  height: 200px;
+  bottom: 20%;
+  left: 5%;
+  background: radial-gradient(circle, var(--dourado-alpha10) 0%, transparent 70%);
+}
+
+/* ── Responsividade ── */
+@media (max-width: 768px) {
+  .hero__botoes {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero__corretores {
+    gap: var(--espaco-4);
+  }
+
+  .hero__corretor-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero__corretores {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
