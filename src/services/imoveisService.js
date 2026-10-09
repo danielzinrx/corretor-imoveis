@@ -54,17 +54,20 @@ export async function buscarImovel(id) {
   return { id: snap.id, ...snap.data() };
 }
 
-/* ── Imóveis em destaque ── */
+/* ── Imóveis em destaque ──
+   Filtra só por "destaque" no Firestore e o resto no navegador,
+   assim não precisa criar índice composto. */
 export async function imoveisDestaque(qtd = 6) {
-  const ref = collection(db, COL);
-  const q   = query(ref,
-    where('destaque', '==', true),
-    where('status',   '==', 'disponivel'),
-    orderBy('dataCadastro', 'desc'),
-    limit(qtd),
-  );
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  const ref  = collection(db, COL);
+  const snap = await getDocs(query(ref, where('destaque', '==', true)));
+
+  const segundos = d => d?.dataCadastro?.seconds ?? 0;
+
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .filter(i => (i.status ?? 'disponivel') === 'disponivel')
+    .sort((a, b) => segundos(b) - segundos(a))
+    .slice(0, qtd);
 }
 
 /* ── Criar imóvel ── */

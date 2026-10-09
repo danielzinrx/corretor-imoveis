@@ -9,7 +9,7 @@ Site do corretor **Edilson Carlos dos Santos – CRECI 6037**, com catálogo de 
 - Tipos: casa, apartamento, lote/terreno/área, rural e loja (venda e aluguel)
 - Página de cada imóvel com galeria de fotos, informações, Google Maps e botão de WhatsApp com mensagem pronta
 - Links para WhatsApp, Instagram, e-mail e para o perfil no DF Imóveis
-- Painel `/admin` (com login) para cadastrar, editar e excluir imóveis, com envio de várias fotos
+- Painel em `/admin` (login em `/admin/login`) para cadastrar, editar e excluir imóveis, com envio de várias fotos
 
 ## Tecnologias
 
