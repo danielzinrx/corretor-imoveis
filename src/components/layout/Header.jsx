@@ -26,7 +26,7 @@ export default function Header() {
   const links = [
     { to: '/',        label: 'Início' },
     { to: '/imoveis', label: 'Imóveis' },
-    { to: '/sobre',   label: 'Corretores' },
+    { to: '/sobre',   label: 'Corretor' },
     { to: '/contato', label: 'Contato' },
   ];
 

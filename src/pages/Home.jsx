@@ -25,7 +25,7 @@ export default function Home() {
       {/* 4. Imóveis em destaque */}
       <ImoveisDestaque />
 
-      {/* 5. Seção dos corretores */}
+      {/* 5. Seção do corretor */}
       <section style={{
         padding:    '80px 24px',
         background: '#000000',
@@ -45,15 +45,15 @@ export default function Home() {
               color:       '#fff',
               marginBottom:'12px',
             }}>
-              Nossa <span style={{
+              Seu <span style={{
                 background: 'linear-gradient(135deg, #B07A1E, #FFD65A)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor:  'transparent',
                 backgroundClip:       'text',
-              }}>Equipe</span>
+              }}>Corretor</span>
             </h2>
             <p style={{ color: '#888', fontSize: '1rem', maxWidth: '500px', margin: '0 auto' }}>
-              Profissionais credenciados e experientes no mercado imobiliário do Distrito Federal
+              Profissional credenciado e experiente no mercado imobiliário do Distrito Federal
             </p>
           </div>
 
@@ -61,7 +61,7 @@ export default function Home() {
             display:             'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap:                 '24px',
-            maxWidth:            '800px',
+            maxWidth:            '420px',
             margin:              '0 auto',
           }}>
             {CORRETORES.map(c => (
@@ -94,7 +94,7 @@ export default function Home() {
             }}>ideal?</span>
           </h2>
           <p style={{ color: '#888', fontSize: '1.0625rem', marginBottom: '36px', lineHeight: '1.7' }}>
-            Entre em contato agora mesmo e deixe nossos especialistas te guiarem até a melhor escolha.
+            Entre em contato agora mesmo e deixe o Edilson te guiar até a melhor escolha.
           </p>
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <a
@@ -144,7 +144,7 @@ export default function Home() {
                 e.currentTarget.style.borderColor  = 'rgba(217,169,63,0.4)';
               }}
             >
-              📞 Falar Conosco
+              📞 Falar com o Edilson
             </a>
           </div>
         </div>

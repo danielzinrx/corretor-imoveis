@@ -73,7 +73,7 @@ export default function Footer() {
               {[
                 { to: '/',        t: 'Início' },
                 { to: '/imoveis', t: 'Catálogo de Imóveis' },
-                { to: '/sobre',   t: 'Corretores' },
+                { to: '/sobre',   t: 'Corretor' },
                 { to: '/contato', t: 'Contato' },
               ].map(l => (
                 <li key={l.to}>
@@ -101,9 +101,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Coluna 4 — Corretores */}
+          {/* Coluna 4 — Corretor */}
           <div>
-            <h4 style={tituloCol}>Corretores</h4>
+            <h4 style={tituloCol}>Corretor</h4>
             {CORRETORES.map(c => (
               <div key={c.id} style={{ marginBottom: '16px' }}>
                 <p style={{ color: '#fff', fontWeight: '600', fontSize: '0.9rem' }}>{c.nome}</p>
