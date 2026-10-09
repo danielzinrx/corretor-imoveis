@@ -129,13 +129,15 @@ export default function DetalheImovel() {
               </div>
             )}
 
-            {imovel.lat && imovel.lng && (
+            {(imovel.lat || imovel.lng || imovel.endereco || imovel.bairro || imovel.cidade) && (
               <div className="caixa">
-                <h2 className="caixa__titulo">Localização</h2>
+                <h2 className="caixa__titulo">Localização no Mapa</h2>
                 <MapaGoogle
                   lat={imovel.lat}
                   lng={imovel.lng}
                   endereco={imovel.endereco}
+                  bairro={imovel.bairro}
+                  cidade={imovel.cidade}
                   titulo={imovel.titulo}
                 />
               </div>

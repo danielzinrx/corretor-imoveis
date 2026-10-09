@@ -1,74 +1,101 @@
 /* =============================================
    COMPONENTE — MapaGoogle
-   Mapa incorporado via iframe (sem API key)
-   Para usar a API JS, substitua o iframe pelo
-   componente com @vis.gl/react-google-maps
+   Mapa interativo com abertura direta no Google Maps
    ============================================= */
 
 import React from 'react';
 
-/**
- * @param {number} lat
- * @param {number} lng
- * @param {string} endereco - texto do endereço para exibição
- * @param {string} titulo   - nome do imóvel
- */
-export default function MapaGoogle({ lat, lng, endereco, titulo }) {
-  if (!lat || !lng) return null;
+export default function MapaGoogle({ lat, lng, endereco, bairro, cidade, titulo }) {
+  const temCoords = lat && lng && !Number.isNaN(Number(lat)) && !Number.isNaN(Number(lng));
+  const termoTexto = endereco || [bairro, cidade, 'Brasília, DF'].filter(Boolean).join(', ');
 
-  // Link do Google Maps para abertura externa
-  const linkMaps = `https://www.google.com/maps?q=${lat},${lng}`;
+  if (!temCoords && !termoTexto) return null;
 
-  // URL do embed (sem key, usa coordenadas)
-  const iframeSrc = `https://maps.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+  // Link para abrir diretamente no app ou site do Google Maps
+  const linkMaps = temCoords
+    ? `https://www.google.com/maps?q=${lat},${lng}`
+    : `https://www.google.com/maps?q=${encodeURIComponent(termoTexto)}`;
+
+  // URL do embed responsivo
+  const iframeSrc = temCoords
+    ? `https://maps.google.com/maps?q=${lat},${lng}&z=16&output=embed`
+    : `https://maps.google.com/maps?q=${encodeURIComponent(termoTexto)}&z=15&output=embed`;
+
+  const textoExibicao = endereco || [bairro, cidade].filter(Boolean).join(' · ') || 'Localização no Distrito Federal';
 
   return (
-    <div>
-      {/* Cabeçalho */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      {/* Endereço e Botão */}
+      <div style={{
+        display:        'flex',
+        alignItems:     'center',
+        justifyContent: 'space-between',
+        flexWrap:       'wrap',
+        gap:            '12px',
+      }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D9A93F" strokeWidth="2">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/>
-          </svg>
-          <span style={{ fontSize: '0.875rem', color: '#c8c8c8' }}>{endereco || 'Ver no mapa'}</span>
+          <span style={{ fontSize: '1.25rem' }}>📍</span>
+          <div>
+            <strong style={{ display: 'block', color: '#fff', fontSize: '0.9375rem' }}>
+              {textoExibicao}
+            </strong>
+            <span style={{ fontSize: '0.8125rem', color: '#888' }}>
+              Clique abaixo para abrir a rota no Google Maps
+            </span>
+          </div>
         </div>
+
         <a
           href={linkMaps}
           target="_blank"
           rel="noopener noreferrer"
           id="mapa-abrir-externo"
           style={{
-            display:        'flex',
+            display:        'inline-flex',
             alignItems:     'center',
-            gap:            '4px',
-            fontSize:       '0.8125rem',
-            color:          '#D9A93F',
+            gap:            '8px',
+            padding:        '10px 18px',
+            borderRadius:   '10px',
+            background:     'linear-gradient(135deg, #B07A1E, #FFD65A)',
+            color:          '#000',
             textDecoration: 'none',
-            fontWeight:     '500',
+            fontWeight:     '700',
+            fontSize:       '0.875rem',
+            boxShadow:      '0 4px 16px rgba(217,169,63,0.25)',
+            transition:     'all 0.25s ease',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 22px rgba(217,169,63,0.4)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.transform = '';
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(217,169,63,0.25)';
           }}
         >
-          Abrir no Maps
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-            <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
           </svg>
+          Abrir no Google Maps →
         </a>
       </div>
 
-      {/* Mapa */}
+      {/* Frame do Mapa Interativo */}
       <div style={{
-        borderRadius:  '12px',
+        borderRadius:  '16px',
         overflow:      'hidden',
-        border:        '1px solid rgba(217,169,63,0.12)',
-        height:        '300px',
+        border:        '1px solid rgba(217,169,63,0.2)',
+        height:        '340px',
         position:      'relative',
+        background:    '#111',
+        boxShadow:     '0 8px 30px rgba(0,0,0,0.5)',
       }}>
         <iframe
-          title={`Localização: ${titulo}`}
+          title={`Mapa de localização: ${titulo || textoExibicao}`}
           src={iframeSrc}
           width="100%"
           height="100%"
-          style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) saturate(0.7)' }}
+          style={{ border: 0, filter: 'contrast(1.05) saturate(1.1)' }}
           allowFullScreen
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
@@ -77,3 +104,4 @@ export default function MapaGoogle({ lat, lng, endereco, titulo }) {
     </div>
   );
 }
+

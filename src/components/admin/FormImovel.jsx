@@ -11,6 +11,7 @@ import {
   TIPOS_IMOVEL, FINALIDADES, STATUS_IMOVEL, CIDADES_DF, CARACTERISTICAS,
 } from '../../config/opcoes.js';
 import { CORRETORES } from '../../config/site.js';
+import MapaGoogle from '../imoveis/MapaGoogle.jsx';
 
 const VAZIO = {
   titulo: '', descricao: '',
@@ -72,13 +73,29 @@ export default function FormImovel({ inicial, pastaFotos, onSalvar, salvando = f
     }));
   };
 
+  const colarLinkOuCoords = (texto) => {
+    if (!texto) return;
+    const coordsMatch = texto.match(/(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/);
+    if (coordsMatch) {
+      set('lat', coordsMatch[1]);
+      set('lng', coordsMatch[2]);
+      return;
+    }
+    const atMatch = texto.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (atMatch) {
+      set('lat', atMatch[1]);
+      set('lng', atMatch[2]);
+      return;
+    }
+  };
+
   const mapaLink = useMemo(() => {
     const lat = String(form.lat).replace(',', '.');
     const lng = String(form.lng).replace(',', '.');
     return lat && lng && !Number.isNaN(Number(lat)) && !Number.isNaN(Number(lng))
       ? `https://www.google.com/maps?q=${lat},${lng}`
-      : null;
-  }, [form.lat, form.lng]);
+      : (form.endereco ? `https://www.google.com/maps?q=${encodeURIComponent(form.endereco)}` : null);
+  }, [form.lat, form.lng, form.endereco]);
 
   const enviar = async (e) => {
     e.preventDefault();
