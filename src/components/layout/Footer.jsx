@@ -103,15 +103,22 @@ export default function Footer() {
 
           {/* Coluna 4 — Corretor */}
           <div>
-            <h4 style={tituloCol}>Corretor</h4>
+            <h4 style={tituloCol}>Corretores</h4>
             {CORRETORES.map(c => (
               <div key={c.id} style={{ marginBottom: '16px' }}>
                 <p style={{ color: '#fff', fontWeight: '600', fontSize: '0.9rem' }}>{c.nome}</p>
                 <p style={{ color: '#D9A93F', fontSize: '0.78rem', marginBottom: '4px' }}>{c.creci}</p>
-                <a href={c.dfImoveis} target="_blank" rel="noopener noreferrer"
-                  style={{ ...linkEstilo, fontSize: '0.8rem' }}>
-                  Ver perfil no DF Imóveis →
-                </a>
+                {c.dfImoveis ? (
+                  <a href={c.dfImoveis} target="_blank" rel="noopener noreferrer"
+                    style={{ ...linkEstilo, fontSize: '0.8rem' }}>
+                    Ver perfil no DF Imóveis →
+                  </a>
+                ) : (
+                  <a href={`https://wa.me/${c.whatsapp}`} target="_blank" rel="noopener noreferrer"
+                    style={{ ...linkEstilo, fontSize: '0.8rem' }}>
+                    Falar no WhatsApp →
+                  </a>
+                )}
               </div>
             ))}
           </div>

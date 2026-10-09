@@ -30,13 +30,13 @@ export default function Hero3D() {
   return (
     <section className="hero" aria-label="Apresentação">
 
-      {/* ── Cena 3D com foto ── */}
+      {/* ── Cena 3D com foto real do imóvel prioritário ── */}
       <div className="hero__cena">
         <div className="hero__imagem-wrap" ref={imgRef}>
           <img
             className="hero__imagem"
             src="/img/hero-casa.jpg"
-            alt="Casa de alto padrão"
+            alt="Sobrado QN 5 Conjunto 19 — Riacho Fundo I"
             loading="eager"
           />
         </div>
@@ -51,11 +51,24 @@ export default function Hero3D() {
       {/* ── Conteúdo ── */}
       <div className="hero__conteudo">
 
-        {/* Badge */}
-        <div className="hero__badge">
-          <span className="hero__badge-ponto" />
-          Corretor Credenciado · CRECI-DF
-        </div>
+        {/* Badge — Destaque Prioritário */}
+        <Link
+          to="/imoveis/aUZ9RhkpifK4Fwj11Wnh"
+          className="hero__badge"
+          style={{
+            textDecoration: 'none',
+            cursor:         'pointer',
+            background:     'rgba(34,197,94,0.12)',
+            borderColor:    'rgba(34,197,94,0.35)',
+            color:          '#4ade80',
+            maxWidth:       'fit-content',
+            marginBottom:   '8px',
+          }}
+          title="Ver este sobrado no Riacho Fundo I"
+        >
+          <span className="hero__badge-ponto" style={{ background: '#22c55e' }} />
+          🔥 Oportunidade Prioritária: Sobrado QN 5 Conjunto 19 · Riacho Fundo I (BAIXOU O VALOR!) →
+        </Link>
 
         {/* Título */}
         <h1 className="hero__titulo">
@@ -67,7 +80,7 @@ export default function Hero3D() {
         <p className="hero__frase">
           <em>"{SITE.slogan}"</em>
           <br />
-          <span style={{ fontSize: '0.9em', color: '#666', fontStyle: 'normal', marginTop: '6px', display: 'block' }}>
+          <span style={{ fontSize: '0.95em', color: '#ffffff', textShadow: '0 2px 8px rgba(0,0,0,0.8)', fontStyle: 'normal', marginTop: '6px', display: 'block' }}>
             Atendimento personalizado no mercado imobiliário do Distrito Federal
           </span>
         </p>
@@ -77,11 +90,20 @@ export default function Hero3D() {
           <Botao
             variante="primario"
             tamanho="lg"
+            href="/imoveis/aUZ9RhkpifK4Fwj11Wnh"
+            icone="⚡"
+            id="hero-ver-prioritario"
+          >
+            Ver Sobrado
+          </Botao>
+          <Botao
+            variante="secundario"
+            tamanho="lg"
             href="/imoveis"
             icone="🏠"
             id="hero-ver-imoveis"
           >
-            Ver Imóveis
+            Ver Todos os Imóveis
           </Botao>
           <Botao
             variante="secundario"

@@ -15,65 +15,98 @@ const DIFERENCIAIS = [
 ];
 
 export default function Sobre() {
-  const corretor = CORRETORES[0];
-  const [fotoOk, setFotoOk] = useState(true);
-
   useEffect(() => {
-    document.title = `Sobre o corretor | ${SITE.nome}`;
+    document.title = `Sobre os corretores | ${SITE.nome}`;
   }, []);
 
   return (
     <main className="pagina">
       <div className="pagina__conteudo">
-        <h1 className="pagina__titulo">Conheça o <span>corretor</span></h1>
+        <h1 className="pagina__titulo">Conheça nossos <span>corretores</span></h1>
+        <p className="pagina__subtitulo">
+          Equipe dedicada com ampla experiência no mercado imobiliário de Brasília e regiões do DF.
+        </p>
 
-        <section className="sobre">
-          {fotoOk ? (
-            <img
-              className="sobre__foto"
-              src={corretor.foto}
-              alt={corretor.nome}
-              onError={() => setFotoOk(false)}
-            />
-          ) : (
-            <div
-              className="sobre__foto"
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: '#111', color: '#D9A93F', fontSize: '6rem', fontWeight: 700,
-              }}
-            >
-              {corretor.nome.charAt(0)}
-            </div>
-          )}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '48px', marginTop: '32px' }}>
+          {CORRETORES.map((corretor) => (
+            <section key={corretor.id} className="sobre" style={{ border: '1px solid rgba(217,169,63,0.15)', borderRadius: '24px', padding: '36px' }}>
+              {corretor.foto ? (
+                <img
+                  className="sobre__foto"
+                  src={corretor.foto}
+                  alt={corretor.nome}
+                  style={{ objectFit: 'cover' }}
+                />
+              ) : (
+                <div
+                  className="sobre__foto"
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: '#111', color: '#D9A93F', fontSize: '6rem', fontWeight: 700,
+                  }}
+                >
+                  {corretor.nome.charAt(0)}
+                </div>
+              )}
 
-          <div>
-            <span className="badge badge--dourado">{corretor.creci}</span>
-            <h2 style={{
-              fontFamily: '"Playfair Display", serif', fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-              color: '#fff', margin: '14px 0 12px',
-            }}>
-              {corretor.nome}
-            </h2>
-            <p style={{ color: '#c8c8c8', lineHeight: 1.8, marginBottom: '12px' }}>{corretor.bio}</p>
-            <p style={{ color: '#888', lineHeight: 1.8, marginBottom: '28px' }}>{SITE.descricao}</p>
+              <div>
+                <span className="badge badge--dourado">{corretor.creci}</span>
+                <h2 style={{
+                  fontFamily: '"Playfair Display", serif', fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
+                  color: '#fff', margin: '14px 0 12px',
+                }}>
+                  {corretor.nome}
+                </h2>
+                <p style={{ color: '#c8c8c8', lineHeight: 1.8, marginBottom: '12px' }}>{corretor.bio}</p>
+                <p style={{ color: '#888', lineHeight: 1.8, marginBottom: '28px' }}>{SITE.descricao}</p>
 
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              <Botao variante="primario" href={linkWhatsappGeral(corretor.whatsapp)} target="_blank" rel="noopener noreferrer" icone="💬" id="sobre-whatsapp">
-                Chamar no WhatsApp
-              </Botao>
-              <Botao variante="secundario" href={linkInstagram(corretor.instagram)} target="_blank" rel="noopener noreferrer" id="sobre-instagram">
-                Instagram
-              </Botao>
-              <Botao variante="secundario" href={linkEmail(corretor.email)} id="sobre-email">
-                E-mail
-              </Botao>
-              <Botao variante="secundario" href={corretor.dfImoveis} target="_blank" rel="noopener noreferrer" id="sobre-dfimoveis">
-                Perfil no DF Imóveis
-              </Botao>
-            </div>
-          </div>
-        </section>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <Botao
+                    variante="primario"
+                    href={linkWhatsappGeral(corretor.whatsapp)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    icone="💬"
+                    id={`sobre-whatsapp-${corretor.id}`}
+                  >
+                    Chamar no WhatsApp
+                  </Botao>
+                  {corretor.instagram && (
+                    <Botao
+                      variante="secundario"
+                      href={linkInstagram(corretor.instagram)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      id={`sobre-instagram-${corretor.id}`}
+                    >
+                      Instagram
+                    </Botao>
+                  )}
+                  {corretor.email && (
+                    <Botao
+                      variante="secundario"
+                      href={linkEmail(corretor.email)}
+                      id={`sobre-email-${corretor.id}`}
+                    >
+                      E-mail
+                    </Botao>
+                  )}
+                  {corretor.dfImoveis && (
+                    <Botao
+                      variante="secundario"
+                      href={corretor.dfImoveis}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      id={`sobre-dfimoveis-${corretor.id}`}
+                    >
+                      Perfil no DF Imóveis
+                    </Botao>
+                  )}
+                </div>
+              </div>
+            </section>
+          ))}
+        </div>
 
         <section style={{
           display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',

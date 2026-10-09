@@ -24,11 +24,23 @@ export const CORRETORES = [
     id: 'corretor-1',
     nome: 'Edilson Carlos dos Santos',
     creci: 'CRECI-DF 6037',
-    foto: '/img/corretor-1.jpg',    // coloque a foto em public/img/
+    foto: '/img/corretor-1.jpg',
     whatsapp: '5561985569820',
     instagram: 'ecarlossantos43',
     email: 'ecarlossantos43@gmail.com',
-    bio: 'Corretor experiente com atuação em todo o Distrito Federal. Especialista em imóveis residenciais e comerciais.',
+    bio: 'Corretor experiente com atuação em todo o Distrito Federal. Especialista em imóveis residenciais, rurais e comerciais.',
     dfImoveis: 'https://www.dfimoveis.com.br/anunciante/edilson-carlos--3183',
   },
+  {
+    id: 'corretor-2',
+    nome: 'David Alves',
+    creci: 'CRECI-DF 26444',
+    foto: '/img/corretor-david.jpg',
+    whatsapp: '5561983411680',
+    instagram: 'david__bsb',
+    email: '',
+    bio: 'Corretor de imóveis credenciado, focado em agilidade, segurança jurídica e atendimento personalizado em todo o DF.',
+    dfImoveis: '',
+  },
 ];
+

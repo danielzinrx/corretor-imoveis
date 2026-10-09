@@ -45,23 +45,23 @@ export default function Home() {
               color:       '#fff',
               marginBottom:'12px',
             }}>
-              Seu <span style={{
+              Nossos <span style={{
                 background: 'linear-gradient(135deg, #B07A1E, #FFD65A)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor:  'transparent',
                 backgroundClip:       'text',
-              }}>Corretor</span>
+              }}>Corretores</span>
             </h2>
-            <p style={{ color: '#888', fontSize: '1rem', maxWidth: '500px', margin: '0 auto' }}>
-              Profissional credenciado e experiente no mercado imobiliário do Distrito Federal
+            <p style={{ color: '#888', fontSize: '1rem', maxWidth: '560px', margin: '0 auto' }}>
+              Profissionais credenciados e dedicados a encontrar o imóvel ideal para você no Distrito Federal
             </p>
           </div>
 
           <div style={{
             display:             'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
             gap:                 '24px',
-            maxWidth:            '420px',
+            maxWidth:            '860px',
             margin:              '0 auto',
           }}>
             {CORRETORES.map(c => (

@@ -120,6 +120,21 @@ export default function FormImovel({ inicial, pastaFotos, onSalvar, salvando = f
             <Seletor id="form-finalidade" label="Finalidade" valor={form.finalidade} onChange={v => set('finalidade', v || 'venda')} opcoes={FINALIDADES} placeholder="Venda" />
             <Seletor id="form-status" label="Status" valor={form.status} onChange={v => set('status', v || 'disponivel')} opcoes={STATUS_IMOVEL} placeholder="Disponível" />
             <div className="campo">
+              <label className="campo__rotulo" htmlFor="form-corretor">Corretor responsável</label>
+              <select
+                id="form-corretor"
+                className="campo__input"
+                value={form.corretorId || CORRETORES[0].id}
+                onChange={e => set('corretorId', e.target.value)}
+              >
+                {CORRETORES.map(c => (
+                  <option key={c.id} value={c.id}>
+                    {c.nome} ({c.creci})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="campo">
               <label className="campo__rotulo" htmlFor="form-valor">Valor (R$)</label>
               <input id="form-valor" className="campo__input" inputMode="numeric" placeholder="580000" {...input('valor')} />
               <span className="campo__ajuda">Só números, sem pontos. Para aluguel, o valor mensal.</span>
