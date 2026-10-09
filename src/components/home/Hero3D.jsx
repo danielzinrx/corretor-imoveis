@@ -68,7 +68,7 @@ export default function Hero3D() {
           <em>"{SITE.slogan}"</em>
           <br />
           <span style={{ fontSize: '0.9em', color: '#666', fontStyle: 'normal', marginTop: '6px', display: 'block' }}>
-            Especialistas no mercado imobiliário do Distrito Federal
+            Atendimento personalizado no mercado imobiliário do Distrito Federal
           </span>
         </p>
 

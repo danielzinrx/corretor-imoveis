@@ -6,9 +6,7 @@
 
 import { initializeApp }   from 'firebase/app';
 import { getFirestore, collection, addDoc, Timestamp } from 'firebase/firestore';
-import { createRequire }   from 'module';
-
-const require = createRequire(import.meta.url);
+import { readFileSync }    from 'node:fs';
 
 // Carrega as variáveis de ambiente manualmente
 import { config } from 'dotenv';
@@ -27,9 +25,9 @@ const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 
 // Importa os dados do JSON
-const { default: imoveis } = await import('../data/imoveis-iniciais.json', {
-  assert: { type: 'json' },
-});
+const imoveis = JSON.parse(
+  readFileSync(new URL('../data/imoveis-iniciais.json', import.meta.url), 'utf-8'),
+);
 
 async function importar() {
   const ref = collection(db, 'imoveis');
