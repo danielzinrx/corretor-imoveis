@@ -11,7 +11,7 @@ import BotoesContato from '../components/imoveis/BotoesContato.jsx';
 import Loader from '../components/ui/Loader.jsx';
 import Botao from '../components/ui/Botao.jsx';
 import { buscarImovel } from '../services/imoveisService.js';
-import { formatarMoeda, formatarArea, labelTipo, labelCidade } from '../utils/formatadores.js';
+import { formatarMoeda, formatarArea, labelTipo, labelCidade, decodificarTexto } from '../utils/formatadores.js';
 import { TIPOS_IMOVEL, CIDADES_DF, FINALIDADES, STATUS_IMOVEL } from '../config/opcoes.js';
 import { SITE } from '../config/site.js';
 
@@ -76,7 +76,7 @@ export default function DetalheImovel() {
 
   const finalidade = FINALIDADES.find(f => f.valor === imovel.finalidade)?.label;
   const status     = STATUS_IMOVEL.find(s => s.valor === imovel.status)?.label;
-  const local      = [imovel.bairro, labelCidade(imovel.cidade, CIDADES_DF)].filter(Boolean).join(' · ');
+  const local      = [decodificarTexto(imovel.bairro), labelCidade(imovel.cidade, CIDADES_DF)].filter(Boolean).join(' · ');
 
   return (
     <main className="pagina">
@@ -88,7 +88,7 @@ export default function DetalheImovel() {
         <div className="detalhe">
           {/* ── Coluna principal ── */}
           <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <GaleriaFotos fotos={imovel.fotos} titulo={imovel.titulo} />
+            <GaleriaFotos fotos={imovel.fotos} titulo={decodificarTexto(imovel.titulo)} />
 
             <div>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
@@ -99,7 +99,7 @@ export default function DetalheImovel() {
                 )}
               </div>
               <h1 className="pagina__titulo" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)' }}>
-                {imovel.titulo}
+                {decodificarTexto(imovel.titulo)}
               </h1>
               {local && <p style={{ color: '#888' }}>📍 {local}</p>}
             </div>
@@ -117,7 +117,7 @@ export default function DetalheImovel() {
               <div className="caixa">
                 <h2 className="caixa__titulo">Sobre o imóvel</h2>
                 <p style={{ color: '#c8c8c8', lineHeight: 1.8, whiteSpace: 'pre-line' }}>
-                  {imovel.descricao}
+                  {decodificarTexto(imovel.descricao)}
                 </p>
               </div>
             )}

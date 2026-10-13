@@ -3,6 +3,26 @@
    ============================================= */
 
 /**
+ * Decodifica entidades HTML numéricas (como &#193; para Á, &#205; para Í)
+ * e entidades nomeadas no texto
+ */
+export function decodificarTexto(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&#(\d+);/g, (_, code) => {
+      try { return String.fromCodePoint(Number(code)); } catch { return ''; }
+    })
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, code) => {
+      try { return String.fromCodePoint(parseInt(code, 16)); } catch { return ''; }
+    })
+    .replace(/&aacute;/gi, 'á').replace(/&eacute;/gi, 'é').replace(/&iacute;/gi, 'í').replace(/&oacute;/gi, 'ó').replace(/&uacute;/gi, 'ú')
+    .replace(/&atilde;/gi, 'ã').replace(/&otilde;/gi, 'õ').replace(/&ccedil;/gi, 'ç')
+    .replace(/&Aacute;/g, 'Á').replace(/&Eacute;/g, 'É').replace(/&Iacute;/g, 'Í').replace(/&Oacute;/g, 'Ó').replace(/&Uacute;/g, 'Ú')
+    .replace(/&Atilde;/g, 'Ã').replace(/&Otilde;/g, 'Õ').replace(/&Ccedil;/g, 'Ç')
+    .replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/&quot;/gi, '"').replace(/&sup2;/gi, '²');
+}
+
+/**
  * Formata um número como moeda brasileira (R$)
  * @param {number} valor
  * @param {boolean} abreviado - se true, usa K/M para valores grandes
@@ -27,12 +47,12 @@ export function formatarMoeda(valor, abreviado = false) {
   }).format(valor);
 }
 
-/**
- * Formata uma área em m²
- * @param {number} area
- */
 export function formatarArea(area) {
   if (!area && area !== 0) return '—';
+  if (area >= 10000) {
+    const ha = (area / 10000).toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+    return `${ha} ha (${new Intl.NumberFormat('pt-BR').format(area)} m²)`;
+  }
   return `${new Intl.NumberFormat('pt-BR').format(area)} m²`;
 }
 

@@ -47,18 +47,89 @@ function fetchHtml(url) {
   return execSync(cmd, { maxBuffer: 10 * 1024 * 1024 }).toString();
 }
 
+function decodificarHtml(str) {
+  if (!str) return '';
+  return str
+    .replace(/&#(\d+);/g, (_, code) => {
+      try { return String.fromCodePoint(Number(code)); } catch { return ''; }
+    })
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, code) => {
+      try { return String.fromCodePoint(parseInt(code, 16)); } catch { return ''; }
+    })
+    .replace(/&aacute;/gi, 'á').replace(/&eacute;/gi, 'é').replace(/&iacute;/gi, 'í').replace(/&oacute;/gi, 'ó').replace(/&uacute;/gi, 'ú')
+    .replace(/&atilde;/gi, 'ã').replace(/&otilde;/gi, 'õ').replace(/&ccedil;/gi, 'ç')
+    .replace(/&Aacute;/g, 'Á').replace(/&Eacute;/g, 'É').replace(/&Iacute;/g, 'Í').replace(/&Oacute;/g, 'Ó').replace(/&Uacute;/g, 'Ú')
+    .replace(/&Atilde;/g, 'Ã').replace(/&Otilde;/g, 'Õ').replace(/&Ccedil;/g, 'Ç')
+    .replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/&quot;/gi, '"').replace(/&sup2;/gi, '²');
+}
+
 function normalizarTexto(txt) {
-  return (txt || '')
+  return decodificarHtml(txt || '')
     .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&#201;/g, 'É')
-    .replace(/&#237;/g, 'í')
-    .replace(/&#227;/g, 'ã')
-    .replace(/&#243;/g, 'ó')
-    .replace(/&#195;/g, 'Ã')
-    .replace(/&#178;/g, '²')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+const SIGLAS = new Set([
+  'DF', 'GO', 'BR', 'QN', 'QSB', 'CLN', 'QSD', 'CLS', 'CSB', 'CNC', 'SCS', 'QNA',
+  'QNH', 'SMPW', 'SHA', 'RUV', 'BPM', 'PMDF', 'CRECI', 'W3', 'SHIS', 'SHIN', 'EQN',
+  'EQS', 'SQN', 'SQS', 'SRES', 'QE', 'QI', 'QL', 'SMU', 'SIA', 'SCIA', 'SOF',
+  'SAAN', 'SGAN', 'SGAS', 'CRU', 'CA', 'QNJ', 'QNM', 'QNN', 'QNO', 'SHVP',
+  'EPTG', 'EPNB', 'EPPR', 'EPTT', 'ED', 'RES', 'KM', 'BL', 'LT', 'CJ'
+]);
+
+const PREPOSICOES = new Set([
+  'de', 'da', 'do', 'das', 'dos', 'em', 'na', 'no', 'nas', 'nos',
+  'e', 'a', 'o', 'as', 'os', 'com', 'por', 'para'
+]);
+
+function capitalizarInteligente(txt) {
+  if (!txt) return '';
+  let s = normalizarTexto(txt)
+    .replace(/chacar[áa]/gi, 'Chácara')
+    .replace(/sitio/gi, 'Sítio')
+    .replace(/itau/gi, 'Itaú')
+    .replace(/[!]{2,}/g, '')
+    .replace(/[?]{2,}/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return s.split(' ').map((palavra, idx) => {
+    const match = palavra.match(/^([(\[{]*)([\p{L}\p{N}]+)([)\]},.:;!?-]*)$/u);
+    if (!match) return palavra;
+    const [, pref, core, suf] = match;
+    const coreUpper = core.toUpperCase();
+    const coreLower = core.toLowerCase();
+
+    if (SIGLAS.has(coreUpper) || (/^[A-Z0-9]{2,5}$/.test(coreUpper) && /\d/.test(coreUpper))) {
+      return pref + coreUpper + suf;
+    }
+    if (/^(I|II|III|IV|V|VI|VII|VIII|IX|X)$/i.test(coreUpper)) {
+      return pref + coreUpper + suf;
+    }
+    if (idx > 0 && PREPOSICOES.has(coreLower)) {
+      return pref + coreLower + suf;
+    }
+    const cap = core.charAt(0).toUpperCase() + core.slice(1).toLowerCase();
+    return pref + cap + suf;
+  }).join(' ').replace(/\s+-\s+$/, '').trim();
+}
+
+function limparDescricao(desc) {
+  if (!desc) return '';
+  let txt = normalizarTexto(desc);
+
+  // Limpar termos de mascaramento do DF Imóveis e erros ortográficos comuns
+  txt = txt
+    .replace(/61\.\s*Ligue\s+Agora/gi, '(61) 98556-9820')
+    .replace(/Ligue\s+Agora\s*\d*/gi, '')
+    .replace(/\bprop[ií]cia para laser\b/gi, 'propícia para lazer')
+    .replace(/\bpara laser\b/gi, 'para lazer')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+([.,;:!?])/g, '$1')
+    .trim();
+
+  return txt;
 }
 
 const REGIOES = [
@@ -97,11 +168,12 @@ function parseImovel(html, url) {
   const dfId = idMatch ? idMatch[1] : '';
 
   const h1Match = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i) || html.match(/itemprop=["']name["'][^>]*>([\s\S]*?)<\/[a-z0-9]+>/i);
-  let titulo = h1Match ? normalizarTexto(h1Match[1]) : '';
-  if (!titulo) {
+  let rawTitulo = h1Match ? normalizarTexto(h1Match[1]) : '';
+  if (!rawTitulo) {
     const ogTitle = html.match(/<meta property="og:title" content="([^"]*)"/i);
-    titulo = ogTitle ? ogTitle[1].replace(/ - DFimoveis\.com/i, '') : 'Imóvel';
+    rawTitulo = ogTitle ? ogTitle[1].replace(/ - DFimoveis\.com/i, '') : 'Imóvel';
   }
+  const titulo = capitalizarInteligente(rawTitulo);
 
   let valor = 0;
   const precoMatch = html.match(/itemprop=["']price["'][^>]*content=["']([^"']+)["']/i) 
@@ -122,11 +194,53 @@ function parseImovel(html, url) {
 
   const finalidade = urlLower.includes('-aluguel-') ? 'aluguel' : 'venda';
 
+  let rawDesc = '';
+  const descMatch = html.match(/<div class=["']assined-imv[^"']*["'][^>]*>([\s\S]*?)<\/div>/i);
+  if (descMatch) {
+    rawDesc = descMatch[1];
+  } else {
+    const ogDesc = html.match(/<meta property="og:description" content="([^"]*)"/i);
+    rawDesc = ogDesc ? ogDesc[1] : '';
+  }
+  const descricao = limparDescricao(rawDesc);
+
   let areaUtil = 0;
   const areaMatch = html.match(/itemprop=["']floorSize["'][^>]*>([\s\S]*?)<\/[a-z0-9]+>/i);
   if (areaMatch) {
-    const rawArea = areaMatch[1].replace(/[^\d,]/g, '').replace(',', '.');
-    areaUtil = Math.round(parseFloat(rawArea) || 0);
+    const rawText = areaMatch[1].toLowerCase();
+    const isHectare = /ha\b|hectare/i.test(rawText);
+    const isAlqueire = /alqueire/i.test(rawText);
+    const rawVal = rawText.replace(/[^\d,.]/g, '').replace(',', '.');
+    let val = parseFloat(rawVal) || 0;
+    if (isHectare) {
+      val = val * 10000;
+    } else if (isAlqueire) {
+      val = val * 48400;
+    }
+    areaUtil = Math.round(val);
+  }
+
+  // Se a área for muito pequena (< 50) e for rural ou lote, procurar na descrição
+  if (areaUtil < 50 && (tipo === 'rural' || tipo === 'lote')) {
+    const descHectare = descricao.match(/(\d+(?:[.,]\d+)?)\s*(?:ha|hectares?)/i);
+    if (descHectare) {
+      const val = parseFloat(descHectare[1].replace(',', '.'));
+      if (val > 0) areaUtil = Math.round(val * 10000);
+    } else {
+      const descM2 = descricao.match(/(\d+(?:[.,]\d+)?)\s*(?:m2|m²)/i);
+      if (descM2) {
+        const val = parseFloat(descM2[1].replace(',', '.'));
+        if (val > 0) areaUtil = Math.round(val);
+      }
+    }
+  }
+
+  let areaTotal = areaUtil;
+  const loteMatch = descricao.match(/lote\s*(?:de\s*)?(\d+)\s*(?:m2|m²|m\b)/i)
+                 || descricao.match(/terreno\s*(?:de\s*)?(\d+)\s*(?:m2|m²|m\b)/i);
+  if (loteMatch) {
+    const loteVal = parseInt(loteMatch[1], 10);
+    if (loteVal > 0) areaTotal = loteVal;
   }
 
   let quartos = 0;
@@ -147,18 +261,13 @@ function parseImovel(html, url) {
 
   const endMatch = html.match(/itemprop=["']address["'][^>]*>([\s\S]*?)<\/[a-z0-9]+>/i);
   const enderecoRaw = endMatch ? normalizarTexto(endMatch[1]) : '';
-  const partesEnd = enderecoRaw.split('-').map(s => s.trim()).filter(Boolean);
-  const bairro = partesEnd[0] || 'Distrito Federal';
-  const cidade = detectarCidade(`${url} ${enderecoRaw} ${titulo}`);
+  const partesEnd = enderecoRaw.split('-').map(s => capitalizarInteligente(s)).filter(Boolean);
+  const removerAcentos = s => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  const partesUnicas = partesEnd.filter((p, i, arr) => arr.findIndex(x => removerAcentos(x) === removerAcentos(p)) === i);
 
-  let descricao = '';
-  const descMatch = html.match(/<div class=["']assined-imv[^"']*["'][^>]*>([\s\S]*?)<\/div>/i);
-  if (descMatch) {
-    descricao = normalizarTexto(descMatch[1]);
-  } else {
-    const ogDesc = html.match(/<meta property="og:description" content="([^"]*)"/i);
-    descricao = ogDesc ? ogDesc[1] : '';
-  }
+  const bairro = partesUnicas[0] || 'Distrito Federal';
+  const cidade = detectarCidade(`${url} ${enderecoRaw} ${titulo}`);
+  const endereco = partesUnicas.join(' - ') || `${bairro}, Brasília – DF`;
 
   const caracs = [];
   const descLow = (descricao + ' ' + titulo).toLowerCase();
@@ -192,9 +301,9 @@ function parseImovel(html, url) {
     destaque: false,
     cidade,
     bairro,
-    endereco: enderecoRaw || `${bairro}, Brasília – DF`,
+    endereco,
     areaUtil,
-    areaTotal: areaUtil,
+    areaTotal,
     quartos,
     suites,
     banheiros,

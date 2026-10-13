@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { formatarMoeda, formatarArea, truncar } from '../../utils/formatadores.js';
+import { formatarMoeda, formatarArea, truncar, decodificarTexto } from '../../utils/formatadores.js';
 import { TIPOS_IMOVEL } from '../../config/opcoes.js';
 import { linkWhatsappImovel } from '../../utils/whatsapp.js';
 import { SITE } from '../../config/site.js';
@@ -176,7 +176,7 @@ export default function CardImovel({ imovel }) {
           onMouseEnter={e => { e.currentTarget.style.color = '#D9A93F'; }}
           onMouseLeave={e => { e.currentTarget.style.color = '#fff'; }}
           >
-            {imovel.titulo}
+            {decodificarTexto(imovel.titulo)}
           </h3>
         </Link>
 
@@ -187,7 +187,7 @@ export default function CardImovel({ imovel }) {
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/>
             </svg>
             <span style={{ fontSize: '0.8125rem', color: '#888' }}>
-              {imovel.bairro}
+              {decodificarTexto(imovel.bairro)}
             </span>
           </div>
         )}
