@@ -2,20 +2,32 @@
    PÁGINA ADMIN — Painel (lista de imóveis)
    ============================================= */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TabelaAdminImoveis from '../../components/admin/TabelaAdminImoveis.jsx';
+import FiltrosAdmin from '../../components/admin/FiltrosAdmin.jsx';
 import Botao from '../../components/ui/Botao.jsx';
 import Loader from '../../components/ui/Loader.jsx';
 import { listarImoveis, atualizarImovel, excluirImovel } from '../../services/imoveisService.js';
 import { removerFoto } from '../../services/storageService.js';
 import { logout, usuarioAtual } from '../../services/authService.js';
 
+const FILTROS_PADRAO = {
+  busca: '',
+  status: 'todos',
+  tipo: 'todos',
+  finalidade: 'todos',
+  cidade: 'todos',
+  destaque: 'todos',
+  ordenar: 'recentes',
+};
+
 export default function Painel() {
   const navigate = useNavigate();
   const [imoveis,    setImoveis]    = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro,       setErro]       = useState('');
+  const [filtros,    setFiltros]    = useState(FILTROS_PADRAO);
 
   const carregar = useCallback(async () => {
     setCarregando(true);
@@ -31,7 +43,7 @@ export default function Painel() {
   }, []);
 
   useEffect(() => {
-    document.title = 'Painel do corretor';
+    document.title = 'Painel do corretor | Gestão de Imóveis';
     carregar();
   }, [carregar]);
 
@@ -65,17 +77,130 @@ export default function Painel() {
     navigate('/admin/login', { replace: true });
   };
 
-  const disponiveis = imoveis.filter(i => (i.status ?? 'disponivel') === 'disponivel').length;
+  const handleFiltroChange = (campo, valor) => {
+    setFiltros(prev => ({ ...prev, [campo]: valor }));
+  };
+
+  const handleLimparFiltros = () => {
+    setFiltros(FILTROS_PADRAO);
+  };
+
+  // Métricas para os KPI Cards
+  const metricas = useMemo(() => {
+    const total = imoveis.length;
+    const disponiveis = imoveis.filter(i => (i.status ?? 'disponivel') === 'disponivel').length;
+    const vendidos = imoveis.filter(i => i.status === 'vendido').length;
+    const reservados = imoveis.filter(i => i.status === 'reservado').length;
+    const destaques = imoveis.filter(i => !!i.destaque).length;
+    const valorTotal = imoveis.reduce((acc, curr) => acc + (Number(curr.valor) || 0), 0);
+
+    return { total, disponiveis, vendidos, reservados, destaques, valorTotal };
+  }, [imoveis]);
+
+  // Lista de cidades disponíveis nos imóveis
+  const cidadesDisponiveis = useMemo(() => {
+    const set = new Set();
+    imoveis.forEach(i => {
+      if (i.cidade) set.add(i.cidade);
+    });
+    return Array.from(set);
+  }, [imoveis]);
+
+  // Filtragem e ordenação local
+  const imoveisFiltrados = useMemo(() => {
+    let lista = [...imoveis];
+
+    // Busca textual
+    if (filtros.busca.trim()) {
+      const q = filtros.busca.toLowerCase().trim();
+      lista = lista.filter(im => {
+        const tit = (im.titulo || '').toLowerCase();
+        const desc = (im.descricao || '').toLowerCase();
+        const bai = (im.bairro || '').toLowerCase();
+        const end = (im.endereco || '').toLowerCase();
+        const dfId = (im.dfImoveisId || '').toLowerCase();
+        const id = (im.id || '').toLowerCase();
+        return (
+          tit.includes(q) ||
+          bai.includes(q) ||
+          end.includes(q) ||
+          dfId.includes(q) ||
+          id.includes(q) ||
+          desc.includes(q)
+        );
+      });
+    }
+
+    // Status
+    if (filtros.status !== 'todos') {
+      lista = lista.filter(im => (im.status ?? 'disponivel') === filtros.status);
+    }
+
+    // Tipo
+    if (filtros.tipo !== 'todos') {
+      lista = lista.filter(im => im.tipo === filtros.tipo);
+    }
+
+    // Finalidade
+    if (filtros.finalidade !== 'todos') {
+      lista = lista.filter(im => im.finalidade === filtros.finalidade);
+    }
+
+    // Cidade
+    if (filtros.cidade !== 'todos') {
+      lista = lista.filter(im => im.cidade === filtros.cidade);
+    }
+
+    // Destaque
+    if (filtros.destaque === 'sim') {
+      lista = lista.filter(im => !!im.destaque);
+    } else if (filtros.destaque === 'nao') {
+      lista = lista.filter(im => !im.destaque);
+    }
+
+    // Ordenação
+    const getSegundos = d =>
+      d?.dataCadastro?.seconds ??
+      (d?.dataCadastro ? new Date(d.dataCadastro).getTime() / 1000 : 0);
+
+    switch (filtros.ordenar) {
+      case 'antigos':
+        lista.sort((a, b) => getSegundos(a) - getSegundos(b));
+        break;
+      case 'maior-preco':
+        lista.sort((a, b) => (Number(b.valor) || 0) - (Number(a.valor) || 0));
+        break;
+      case 'menor-preco':
+        lista.sort((a, b) => (Number(a.valor) || 0) - (Number(b.valor) || 0));
+        break;
+      case 'az':
+        lista.sort((a, b) => (a.titulo || '').localeCompare(b.titulo || ''));
+        break;
+      case 'za':
+        lista.sort((a, b) => (b.titulo || '').localeCompare(a.titulo || ''));
+        break;
+      case 'recentes':
+      default:
+        lista.sort((a, b) => getSegundos(b) - getSegundos(a));
+        break;
+    }
+
+    return lista;
+  }, [imoveis, filtros]);
+
+  const valorTotalFiltrado = useMemo(() => {
+    return imoveisFiltrados.reduce((acc, curr) => acc + (Number(curr.valor) || 0), 0);
+  }, [imoveisFiltrados]);
 
   return (
     <main className="pagina">
       <div className="pagina__conteudo">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
+        {/* Cabeçalho do Painel */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap', marginBottom: '28px' }}>
           <div>
             <h1 className="pagina__titulo">Painel do <span>corretor</span></h1>
             <p className="pagina__subtitulo">
-              {usuarioAtual()?.email} · {imoveis.length} {imoveis.length === 1 ? 'imóvel' : 'imóveis'}
-              {imoveis.length > 0 && <> ({disponiveis} disponíveis)</>}
+              {usuarioAtual()?.email} · Gestão inteligente e controle completo do catálogo de imóveis
             </p>
           </div>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
@@ -84,13 +209,34 @@ export default function Painel() {
           </div>
         </div>
 
-        {erro && <div className="aviso aviso--erro" role="alert" style={{ marginTop: '20px' }}>{erro}</div>}
+        {erro && <div className="aviso aviso--erro" role="alert" style={{ marginBottom: '20px' }}>{erro}</div>}
 
-        <div style={{ marginTop: '32px' }}>
-          {carregando
-            ? <Loader texto="Carregando imóveis..." />
-            : <TabelaAdminImoveis imoveis={imoveis} onExcluir={excluir} onAlterarCampo={alterarCampo} />}
-        </div>
+        {carregando ? (
+          <Loader texto="Carregando imóveis..." />
+        ) : (
+          <>
+            {/* Seção de Métricas e Filtros */}
+            <FiltrosAdmin
+              filtros={filtros}
+              onFiltroChange={handleFiltroChange}
+              onLimparFiltros={handleLimparFiltros}
+              metricas={metricas}
+              cidadesDisponiveis={cidadesDisponiveis}
+              totalFiltrados={imoveisFiltrados.length}
+              totalImoveis={imoveis.length}
+              valorTotalFiltrado={valorTotalFiltrado}
+            />
+
+            {/* Tabela de Imóveis */}
+            <TabelaAdminImoveis
+              imoveis={imoveisFiltrados}
+              totalOriginal={imoveis.length}
+              onLimparFiltros={handleLimparFiltros}
+              onExcluir={excluir}
+              onAlterarCampo={alterarCampo}
+            />
+          </>
+        )}
       </div>
     </main>
   );

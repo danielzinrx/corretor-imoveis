@@ -438,3 +438,320 @@
   color: #000;
   font-weight: 700;
 }
+
+/* ── Admin KPIs ── */
+.admin-controles-secao {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.admin-kpis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.admin-kpi-card {
+  background: #111;
+  border: 1px solid rgba(217, 169, 63, 0.15);
+  border-radius: 14px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-kpi-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(217, 169, 63, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.admin-kpi-card--ativo {
+  border-color: #D9A93F;
+  background: rgba(217, 169, 63, 0.08);
+  box-shadow: 0 0 16px rgba(217, 169, 63, 0.15);
+}
+
+.admin-kpi-card--destaque {
+  background: linear-gradient(135deg, rgba(176, 122, 30, 0.15), rgba(255, 214, 90, 0.05));
+  border-color: rgba(217, 169, 63, 0.3);
+}
+
+.admin-kpi-card__topo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-kpi-card__icone {
+  font-size: 1.125rem;
+}
+
+.admin-kpi-card__rotulo {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+}
+
+.admin-kpi-card__valor {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.admin-kpi-card__valor--moeda {
+  font-size: 1.25rem;
+  color: #FFD65A;
+}
+
+.admin-kpi-card__sub {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* ── Admin Filtros Box ── */
+.admin-filtros-box {
+  background: #111;
+  border: 1px solid rgba(217, 169, 63, 0.15);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-filtros-topo {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.admin-busca-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 280px;
+}
+
+.admin-busca-icone {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.875rem;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.admin-busca-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(217, 169, 63, 0.25);
+  border-radius: 9999px;
+  padding: 10px 36px 10px 38px;
+  color: #fff;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.admin-busca-input:focus {
+  border-color: #D9A93F;
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 12px rgba(217, 169, 63, 0.2);
+}
+
+.admin-busca-limpar {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.admin-busca-limpar:hover {
+  color: #fff;
+}
+
+.admin-status-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.admin-status-tab {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  color: #aaa;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-status-tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.admin-status-tab--ativo {
+  background: rgba(217, 169, 63, 0.15);
+  border-color: #D9A93F;
+  color: #FFD65A;
+  font-weight: 600;
+}
+
+.admin-tab-cont {
+  font-size: 0.6875rem;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.admin-tab-cont--verde {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+}
+
+.admin-tab-cont--amarelo {
+  background: rgba(234, 179, 8, 0.2);
+  color: #facc15;
+}
+
+.admin-tab-cont--vermelho {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+/* ── Grid de Seletores ── */
+.admin-filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.admin-seletor-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-seletor-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #D9A93F;
+}
+
+.admin-seletor-campo {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(217, 169, 63, 0.2);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: #fff;
+  font-size: 0.8125rem;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-seletor-campo:focus {
+  border-color: #D9A93F;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.admin-seletor-campo option {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+/* ── Rodapé dos Filtros ── */
+.admin-filtros-rodape {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.admin-filtros-contagem {
+  font-size: 0.8125rem;
+  color: #888;
+}
+
+.admin-filtros-contagem strong {
+  color: #fff;
+}
+
+.admin-filtros-soma {
+  margin-left: 6px;
+  color: #aaa;
+}
+
+.admin-filtros-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-filtro-tag {
+  background: rgba(217, 169, 63, 0.12);
+  border: 1px solid rgba(217, 169, 63, 0.3);
+  color: #FFD65A;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-filtro-tag:hover {
+  background: rgba(217, 169, 63, 0.25);
+  border-color: #FFD65A;
+}
+
+.admin-limpar-btn {
+  background: transparent;
+  border: 1px dashed rgba(239, 68, 68, 0.4);
+  color: #f87171;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-limpar-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-style: solid;
+}
+
+.admin-titulo-link:hover {
+  color: #FFD65A !important;
+  text-decoration: underline !important;
+}
