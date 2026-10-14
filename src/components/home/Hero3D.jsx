@@ -3,15 +3,19 @@
    Seção principal com efeito parallax 3D
    ============================================= */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/hero3d.css';
 import { SITE, CORRETORES } from '../../config/site.js';
 import { linkWhatsappGeral } from '../../utils/whatsapp.js';
+import { buscarImovelPrioritario } from '../../services/imoveisService.js';
 import Botao from '../ui/Botao.jsx';
+
+const ID_PRIORITARIO_PADRAO = '0zmg51cZX08qnLUPMIaI';
 
 export default function Hero3D() {
   const imgRef = useRef(null);
+  const [imovelId, setImovelId] = useState(ID_PRIORITARIO_PADRAO);
 
   // Efeito parallax suave com mouse
   useEffect(() => {
@@ -27,21 +31,40 @@ export default function Hero3D() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  // Busca dinâmica do ID do imóvel prioritário (evita quebrar se sincronizar ou recriar)
+  useEffect(() => {
+    let ativo = true;
+    buscarImovelPrioritario().then((imovel) => {
+      if (ativo && imovel?.id) {
+        setImovelId(imovel.id);
+      }
+    });
+    return () => { ativo = false; };
+  }, []);
+
+  const linkPrioritario = `/imoveis/${imovelId}`;
+
   return (
     <section className="hero" aria-label="Apresentação">
 
       {/* ── Cena 3D com foto real do imóvel prioritário ── */}
       <div className="hero__cena">
-        <div className="hero__imagem-wrap" ref={imgRef}>
+        <Link
+          to={linkPrioritario}
+          className="hero__imagem-wrap"
+          ref={imgRef}
+          title="Ver informações sobre este sobrado no Riacho Fundo I"
+          style={{ display: 'block', cursor: 'pointer' }}
+        >
           <img
             className="hero__imagem"
             src="/img/hero-casa.jpg"
             alt="Sobrado QN 5 Conjunto 19 — Riacho Fundo I"
             loading="eager"
           />
-        </div>
-        <div className="hero__overlay" />
-        <div className="hero__overlay-dourado" />
+        </Link>
+        <div className="hero__overlay" style={{ pointerEvents: 'none' }} />
+        <div className="hero__overlay-dourado" style={{ pointerEvents: 'none' }} />
       </div>
 
       {/* ── Partículas decorativas ── */}
@@ -53,7 +76,7 @@ export default function Hero3D() {
 
         {/* Badge — Destaque Prioritário */}
         <Link
-          to="/imoveis/aUZ9RhkpifK4Fwj11Wnh"
+          to={linkPrioritario}
           className="hero__badge"
           style={{
             textDecoration: 'none',
@@ -90,7 +113,7 @@ export default function Hero3D() {
           <Botao
             variante="primario"
             tamanho="lg"
-            href="/imoveis/aUZ9RhkpifK4Fwj11Wnh"
+            href={linkPrioritario}
             icone="⚡"
             id="hero-ver-prioritario"
           >

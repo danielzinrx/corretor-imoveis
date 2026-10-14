@@ -46,12 +46,83 @@ export async function listarImoveis(filtros = {}) {
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
+/* ── Buscar imóvel prioritário da Hero (Sobrado QN 5 Conjunto 19) ── */
+export async function buscarImovelPrioritario() {
+  const ref = collection(db, COL);
+
+  // 1. Tentar pelo dfImoveisId do Sobrado Prioritário (1085123)
+  try {
+    const q1 = query(ref, where('dfImoveisId', '==', '1085123'), limit(1));
+    const snap1 = await getDocs(q1);
+    if (!snap1.empty) {
+      const d = snap1.docs[0];
+      return { id: d.id, ...d.data() };
+    }
+  } catch (e) {
+    console.warn('buscarImovelPrioritario por dfImoveisId falhou:', e);
+  }
+
+  // 2. Tentar pelo ID fixo atual caso exista
+  try {
+    const snapDoc = await getDoc(doc(db, COL, '0zmg51cZX08qnLUPMIaI'));
+    if (snapDoc.exists()) {
+      return { id: snapDoc.id, ...snapDoc.data() };
+    }
+  } catch (e) {
+    // silencioso
+  }
+
+  // 3. Fallback: procurar pelo título que contenha QN 5 Conjunto 19
+  try {
+    const snapAll = await getDocs(collection(db, COL));
+    for (const d of snapAll.docs) {
+      const data = d.data();
+      if (data.titulo && data.titulo.toLowerCase().includes('qn 5 conjunto 19')) {
+        return { id: d.id, ...data };
+      }
+    }
+  } catch (e) {
+    console.warn('buscarImovelPrioritario por título falhou:', e);
+  }
+
+  return null;
+}
+
 /* ── Buscar por ID ── */
 export async function buscarImovel(id) {
-  const ref  = doc(db, COL, id);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return null;
-  return { id: snap.id, ...snap.data() };
+  if (!id) return null;
+
+  // 1. Busca direta pelo ID do documento
+  try {
+    const ref  = doc(db, COL, id);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      return { id: snap.id, ...snap.data() };
+    }
+  } catch (err) {
+    console.warn('buscarImovel: erro na busca direta por ID:', err);
+  }
+
+  // 2. Fallback caso seja o ID antigo/legado do sobrado do Hero
+  if (id === 'aUZ9RhkpifK4Fwj11Wnh') {
+    const prioritario = await buscarImovelPrioritario();
+    if (prioritario) return prioritario;
+  }
+
+  // 3. Fallback: tentar buscar por dfImoveisId (caso a rota use o código do DF Imóveis)
+  try {
+    const refCol = collection(db, COL);
+    const q = query(refCol, where('dfImoveisId', '==', id), limit(1));
+    const snapQ = await getDocs(q);
+    if (!snapQ.empty) {
+      const d = snapQ.docs[0];
+      return { id: d.id, ...d.data() };
+    }
+  } catch (err) {
+    console.warn('buscarImovel: fallback dfImoveisId falhou:', err);
+  }
+
+  return null;
 }
 
 /* ── Imóveis em destaque ──

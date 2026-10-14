@@ -4,6 +4,7 @@
    ============================================= */
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const estilos = {
   base: {
@@ -111,6 +112,14 @@ export default function Botao({
   };
 
   if (href) {
+    if (!target && href.startsWith('/')) {
+      return (
+        <Link to={href} {...props}>
+          {icone && <span>{icone}</span>}
+          {children}
+        </Link>
+      );
+    }
     return (
       <a href={href} target={target} rel={rel} {...props}>
         {icone && <span>{icone}</span>}
