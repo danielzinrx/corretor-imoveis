@@ -101,7 +101,22 @@ export default function DetalheImovel() {
               <h1 className="pagina__titulo" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)' }}>
                 {decodificarTexto(imovel.titulo)}
               </h1>
-              {local && <p style={{ color: '#888' }}>📍 {local}</p>}
+              {local && (
+                <p style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#888', fontSize: '0.9375rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '1rem' }}>📍</span>
+                  <span>{local}</span>
+                  {imovel.bairro && (
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([imovel.bairro, imovel.cidade ? imovel.cidade + ' DF' : 'Brasília DF'].join(', '))}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: '#D9A93F', fontSize: '0.8125rem', textDecoration: 'underline', fontWeight: 500 }}
+                    >
+                      ver no mapa →
+                    </a>
+                  )}
+                </p>
+              )}
             </div>
 
             <div className="fichas">
@@ -129,9 +144,9 @@ export default function DetalheImovel() {
               </div>
             )}
 
-            {(imovel.lat || imovel.lng || imovel.endereco || imovel.bairro || imovel.cidade) && (
+            {(imovel.lat || imovel.lng || imovel.endereco || imovel.bairro || imovel.cidade || imovel.dfImoveisId) && (
               <div className="caixa">
-                <h2 className="caixa__titulo">Localização no Mapa</h2>
+                <h2 className="caixa__titulo">📍 Localização</h2>
                 <MapaGoogle
                   lat={imovel.lat}
                   lng={imovel.lng}
@@ -139,6 +154,8 @@ export default function DetalheImovel() {
                   bairro={imovel.bairro}
                   cidade={imovel.cidade}
                   titulo={imovel.titulo}
+                  dfImoveisId={imovel.dfImoveisId}
+                  linkDFImoveis={imovel.linkDFImoveis}
                 />
               </div>
             )}

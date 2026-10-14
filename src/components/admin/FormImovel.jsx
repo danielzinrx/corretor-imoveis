@@ -16,10 +16,11 @@ import MapaGoogle from '../imoveis/MapaGoogle.jsx';
 const VAZIO = {
   titulo: '', descricao: '',
   tipo: '', finalidade: 'venda', status: 'disponivel', destaque: false,
-  valor: '', cidade: '', bairro: '', endereco: '', lat: '', lng: '',
+  valor: '', cidade: '', bairro: '', endereco: '', enderecoCompleto: '', lat: '', lng: '',
   areaUtil: '', areaTotal: '', quartos: '', suites: '', banheiros: '', vagas: '',
   caracteristicas: [], fotos: [],
   corretorId: CORRETORES[0].id,
+  dfImoveisId: '', linkDFImoveis: '',
 };
 
 const CAMPOS_NUMERICOS = ['valor', 'lat', 'lng', 'areaUtil', 'areaTotal', 'quartos', 'suites', 'banheiros', 'vagas'];
@@ -174,29 +175,129 @@ export default function FormImovel({ inicial, pastaFotos, onSalvar, salvando = f
       {/* ── Localização ── */}
       <section className="caixa">
         <h2 className="caixa__titulo">Localização</h2>
-        <div className="grade-form grade-form--larga">
-          <Seletor id="form-cidade" label="Cidade / região" valor={form.cidade} onChange={v => set('cidade', v)} opcoes={CIDADES_DF} placeholder="Selecione" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="grade-form grade-form--larga">
+            <Seletor id="form-cidade" label="Cidade / região" valor={form.cidade} onChange={v => set('cidade', v)} opcoes={CIDADES_DF} placeholder="Selecione" />
+            <div className="campo">
+              <label className="campo__rotulo" htmlFor="form-bairro">Bairro / Quadra</label>
+              <input id="form-bairro" className="campo__input" placeholder="Ex.: Riacho Fundo, QN 5" {...input('bairro')} />
+            </div>
+          </div>
+
           <div className="campo">
-            <label className="campo__rotulo" htmlFor="form-bairro">Bairro</label>
-            <input id="form-bairro" className="campo__input" {...input('bairro')} />
+            <label className="campo__rotulo" htmlFor="form-endereco">Endereço Completo</label>
+            <input
+              id="form-endereco"
+              className="campo__input"
+              placeholder="Ex.: QN 5 Conjunto 19, Riacho Fundo I, Brasília - DF"
+              {...input('endereco')}
+            />
+            <span className="campo__ajuda">
+              Digite como no anuncio do DF Imóveis: Quadra + Conjunto + Cidade + Estado.
+              Isso garante que o mapa encontre o local correto.
+            </span>
           </div>
-          <div className="campo" style={{ gridColumn: '1 / -1' }}>
-            <label className="campo__rotulo" htmlFor="form-endereco">Endereço</label>
-            <input id="form-endereco" className="campo__input" placeholder="QSB 3 Conjunto 2 — Taguatinga Sul" {...input('endereco')} />
+
+          {/* Código DF Imóveis + Link do anúncio */}
+          <div className="grade-form">
+            <div className="campo">
+              <label className="campo__rotulo" htmlFor="form-df-id">Cód. DF Imóveis</label>
+              <input id="form-df-id" className="campo__input" placeholder="Ex.: 1085123" {...input('dfImoveisId')} />
+              <span className="campo__ajuda">Número ao final da URL do anúncio no site DF Imóveis.</span>
+            </div>
+            <div className="campo">
+              <label className="campo__rotulo" htmlFor="form-df-link">Link do Anúncio (DF Imóveis)</label>
+              <input
+                id="form-df-link"
+                className="campo__input"
+                placeholder="https://www.dfimoveis.com.br/imovel/..."
+                {...input('linkDFImoveis')}
+              />
+              {form.linkDFImoveis && (
+                <a href={form.linkDFImoveis} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: '#D9A93F', marginTop: '4px', display: 'inline-block' }}>
+                  Abrir anúncio →
+                </a>
+              )}
+            </div>
           </div>
-          <div className="campo">
-            <label className="campo__rotulo" htmlFor="form-lat">Latitude</label>
-            <input id="form-lat" className="campo__input" inputMode="decimal" placeholder="-15.8399" {...input('lat')} />
+
+          {/* Lat / Lng */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#D9A93F' }}>
+                Coordenadas GPS (Opcional, mas mais preciso)
+              </span>
+              {form.lat && form.lng ? (
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <a
+                    href={`https://www.google.com/maps?q=${String(form.lat).replace(',','.')},${String(form.lng).replace(',','.')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontSize: '0.75rem', color: '#1a73e8', background: 'rgba(26,115,232,0.12)', border: '1px solid rgba(26,115,232,0.3)', borderRadius: '6px', padding: '4px 10px', textDecoration: 'none', fontWeight: 600 }}
+                  >
+                    🗺️ Ver no Maps
+                  </a>
+                  <a
+                    href={`https://waze.com/ul?ll=${String(form.lat).replace(',','.')},${String(form.lng).replace(',','.')}&navigate=yes`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontSize: '0.75rem', color: '#09c7f3', background: 'rgba(9,199,243,0.1)', border: '1px solid rgba(9,199,243,0.3)', borderRadius: '6px', padding: '4px 10px', textDecoration: 'none', fontWeight: 600 }}
+                  >
+                    🗣️ Waze
+                  </a>
+                </div>
+              ) : null}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div className="campo">
+                <label className="campo__rotulo" htmlFor="form-lat">Latitude</label>
+                <input id="form-lat" className="campo__input" inputMode="decimal" placeholder="-15.8399" {...input('lat')} />
+              </div>
+              <div className="campo">
+                <label className="campo__rotulo" htmlFor="form-lng">Longitude</label>
+                <input id="form-lng" className="campo__input" inputMode="decimal" placeholder="-48.0526" {...input('lng')} />
+              </div>
+            </div>
+
+            {/* Cole o link do Google Maps para extrair coords automaticamente */}
+            <div className="campo">
+              <label className="campo__rotulo" htmlFor="form-link-maps">Colar Link / Coords do Google Maps</label>
+              <input
+                id="form-link-maps"
+                className="campo__input"
+                placeholder="Cole aqui o link do Google Maps ou as coordenadas (-15.8399,-48.0526)"
+                onPaste={e => {
+                  const texto = e.clipboardData.getData('text');
+                  colarLinkOuCoords(texto);
+                }}
+                onChange={e => colarLinkOuCoords(e.target.value)}
+              />
+              <span className="campo__ajuda">
+                No Google Maps: clique com botão direito no local → clique nos números para copiar as coordenadas.
+                Ou copie o link completo da página e cole aqui — as coordenadas serão extraídas automaticamente.
+              </span>
+            </div>
           </div>
-          <div className="campo">
-            <label className="campo__rotulo" htmlFor="form-lng">Longitude</label>
-            <input id="form-lng" className="campo__input" inputMode="decimal" placeholder="-48.0526" {...input('lng')} />
-          </div>
+
+          {/* Preview do Mapa */}
+          {(form.lat || form.lng || form.endereco || form.bairro || form.cidade) && (
+            <div style={{ marginTop: '4px' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#D9A93F', marginBottom: '10px' }}>
+                Pré-visualização do Mapa
+              </div>
+              <MapaGoogle
+                lat={form.lat}
+                lng={form.lng}
+                endereco={form.endereco}
+                bairro={form.bairro}
+                cidade={form.cidade}
+                titulo={form.titulo}
+                dfImoveisId={form.dfImoveisId}
+                linkDFImoveis={form.linkDFImoveis}
+              />
+            </div>
+          )}
         </div>
-        <p className="campo__ajuda" style={{ marginTop: '10px' }}>
-          Dica: no Google Maps, clique com o botão direito no local do imóvel e clique nos números para copiar latitude e longitude.
-          {mapaLink && <> <a href={mapaLink} target="_blank" rel="noopener noreferrer" style={{ color: '#D9A93F' }}>Conferir no mapa →</a></>}
-        </p>
       </section>
 
       {/* ── Medidas ── */}
